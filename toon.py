@@ -1,9 +1,11 @@
+import os
 from PIL import Image, ImageDraw, ImageFont
 import requests
 from io import BytesIO
 from flask import Flask, send_file, request
 
 #http://localhost:5000/toon?char=ewok_paploo&gear=10&stars=2&zetas=3
+#menfin.pythonanywhere.com/toon?char=ewok_paploo&gear=10&stars=2&zetas=3
 
 star_active = Image.open("star.png")
 star_inactive = Image.open("star-inactive.png")
@@ -80,4 +82,5 @@ def get_toon():
     return send_file(byte_io, mimetype='image/png')
 
 if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
     app.run(debug=False)
