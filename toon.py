@@ -95,9 +95,8 @@ def get_image(char, gear, stars, zetas_count):
 app = Flask(__name__)
 
 
-@app.route('/toon')
-def get_toon():
-    char = request.args.get('char')
+@app.route('/toon/<char>')
+def get_toon(char):
     gear = int(request.args.get('gear'))
     stars = int(request.args.get('stars'))
     zetas = int(request.args.get('zetas'))
