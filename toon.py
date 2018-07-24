@@ -4,11 +4,12 @@ import requests
 from io import BytesIO
 from flask import Flask, send_file, request
 
-#http://localhost:5000/toon?char=ewok_paploo&gear=10&stars=2&zetas=3
-#menfin.pythonanywhere.com/toon?char=ewok_paploo&gear=10&stars=2&zetas=3
+# http://localhost:5000/toon?char=ewok_paploo&gear=10&stars=2&zetas=3
+# menfin.pythonanywhere.com/toon?char=ewok_paploo&gear=10&stars=2&zetas=3
 
 star_active = Image.open("star.png")
 star_inactive = Image.open("star-inactive.png")
+
 
 def choose_star(current_star, toon_stars):
     if current_star <= toon_stars:
@@ -16,10 +17,23 @@ def choose_star(current_star, toon_stars):
     else:
         return star_inactive
 
+
+def ensure_cache_dir_exists():
+    if not os.path.exists("cache"):
+        os.makedirs("cache")
+
+
 def get_char_image(char_name):
-    url = "https://swgoh.gg/static/img/assets/tex.charui_" + char_name + ".png"
-    response = requests.get(url)
-    return Image.open(BytesIO(response.content))
+    try:
+        result = Image.open("cache/tex.charui_" + char_name + ".png")
+    except:
+        url = "https://swgoh.gg/static/img/assets/tex.charui_" + char_name + ".png"
+        response = requests.get(url)
+        result = Image.open(BytesIO(response.content))
+        ensure_cache_dir_exists()
+        result.save("cache/tex.charui_" + char_name + ".png")
+    return result
+
 
 def generate_image(char, gear, stars, zetas_count):
     result = Image.new('RGB', (150, 150), color=(0, 0, 0))
@@ -32,7 +46,7 @@ def generate_image(char, gear, stars, zetas_count):
 
     mask = Image.new('L', result.size, color=0)
     draw = ImageDraw.Draw(mask)
-    transparent_area = (11,22,139,150)
+    transparent_area = (11, 22, 139, 150)
     draw.ellipse(transparent_area, fill=255)
     result.putalpha(mask)
 
@@ -62,12 +76,24 @@ def generate_image(char, gear, stars, zetas_count):
 
     draw_gear = ImageDraw.Draw(result)
 
-#    draw_gear.text((75, 75), "XI", font=ImageFont.truetype("/usr/share/fonts/TTF/DejaVuSansMono-Bold.ttf", 15))
+    #    draw_gear.text((75, 75), "XI", font=ImageFont.truetype("/usr/share/fonts/TTF/DejaVuSansMono-Bold.ttf", 15))
 
     return result
 
 
+def get_image(char, gear, stars, zetas_count):
+    cache_name = "cache/" + char + "_g" + str(gear) + "_" + str(stars) + "stars_" + str(zetas_count) + "zetas.png"
+    try:
+        result = Image.open(cache_name)
+    except:
+        result = generate_image(char, gear, stars, zetas_count)
+        ensure_cache_dir_exists()
+        result.save(cache_name)
+    return result
+
+
 app = Flask(__name__)
+
 
 @app.route('/toon')
 def get_toon():
@@ -76,11 +102,12 @@ def get_toon():
     stars = int(request.args.get('stars'))
     zetas = int(request.args.get('zetas'))
     byte_io = BytesIO()
-    image = generate_image(char, gear, stars, zetas)
+    image = get_image(char, gear, stars, zetas)
     image.save(byte_io, 'PNG')
     byte_io.seek(0)
     return send_file(byte_io, mimetype='image/png')
 
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    app.run(debug=False, host='0.0.0.0', port=port)
+    app.run(debug=True, host='0.0.0.0', port=port)
