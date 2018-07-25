@@ -19,7 +19,11 @@ def choose_star(current_star, toon_stars):
 
 
 def ensure_cache_dir_exists():
+    print("cwd: " + os.getcwd())
+    print("cache: " + os.path.abspath("cache"))
+
     if not os.path.exists("cache"):
+        print("creating cache dir")
         os.makedirs("cache")
 
 
@@ -108,5 +112,6 @@ def get_toon(char):
 
 
 if __name__ == '__main__':
+    print("cwd: " + os.getcwd())
     port = int(os.environ.get('PORT', 5000))
     app.run(debug=True, host='0.0.0.0', port=port)
