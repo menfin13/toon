@@ -4,8 +4,8 @@ import requests
 from io import BytesIO
 from flask import Flask, send_file, request
 
-# http://localhost:5000/toon?char=ewok_paploo&gear=10&stars=2&zetas=3
-# menfin.pythonanywhere.com/toon?char=ewok_paploo&gear=10&stars=2&zetas=3
+# http://localhost:5000/toon/ewok_paploo?gear=10&stars=2&zetas=3
+# https://menfin-swgoh.herokuapp.com/toon/ewok_paploo?gear=10&stars=2&zetas=3
 
 star_active = Image.open("star.png")
 star_inactive = Image.open("star-inactive.png")
