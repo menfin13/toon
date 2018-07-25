@@ -86,13 +86,13 @@ def generate_image(char, gear, stars, zetas_count):
 
 
 def get_image(char, gear, stars, zetas_count):
+    ensure_cache_dir_exists()
     print(os.listdir("cache"))
     cache_name = "cache/" + char + "_g" + str(gear) + "_" + str(stars) + "stars_" + str(zetas_count) + "zetas.png"
     try:
         result = Image.open(cache_name)
     except:
         result = generate_image(char, gear, stars, zetas_count)
-        ensure_cache_dir_exists()
         result.save(cache_name)
     return result
 
