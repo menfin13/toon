@@ -35,7 +35,7 @@ def get_char_image(char_name):
     return result
 
 
-def generate_image(char, gear, stars, zetas_count):
+def generate_image(char, gear, stars, zetas_count, speed):
     result = Image.new('RGB', (150, 150), color=(0, 0, 0))
 
     toon = get_char_image(char)
@@ -74,6 +74,16 @@ def generate_image(char, gear, stars, zetas_count):
         draw_zeta.text((25, 15), str(zetas_count), font=ImageFont.truetype("/usr/share/fonts/TTF/DejaVuSans.ttf", 18))
         result.paste(zeta_img, (0, 90), zeta_img)
 
+    # VITESSE
+    if speed > 0:
+        speed_img = Image.open("speed.png")
+        speed_img = speed_img.resize((50, 50))
+        draw_speed = ImageDraw.Draw(speed_img)
+        draw_speed.text((9, 16), str(speed),
+                        font=ImageFont.truetype("/usr/share/fonts/TTF/DejaVuSans-Bold.ttf", 16),
+                        fill=(0, 0, 0, 255))
+        result.paste(speed_img, (90, 90), speed_img)
+
     draw_gear = ImageDraw.Draw(result)
 
     #    draw_gear.text((75, 75), "XI", font=ImageFont.truetype("/usr/share/fonts/TTF/DejaVuSansMono-Bold.ttf", 15))
@@ -81,13 +91,14 @@ def generate_image(char, gear, stars, zetas_count):
     return result
 
 
-def get_image(char, gear, stars, zetas_count):
+def get_image(char, gear, stars, zetas_count, speed):
     ensure_cache_dir_exists()
-    cache_name = "cache/" + char + "_g" + str(gear) + "_" + str(stars) + "stars_" + str(zetas_count) + "zetas.png"
+    cache_name = "cache/" + char + "_g" + str(gear) + "_" + str(stars) + "stars_" + str(zetas_count) + "zetas_" + str(
+        speed) + "speed.png"
     try:
         result = Image.open(cache_name)
     except:
-        result = generate_image(char, gear, stars, zetas_count)
+        result = generate_image(char, gear, stars, zetas_count, speed)
         result.save(cache_name)
     return result
 
@@ -100,8 +111,12 @@ def get_toon(char):
     gear = int(request.args.get('gear'))
     stars = int(request.args.get('stars'))
     zetas = int(request.args.get('zetas'))
+    if request.args.get('speed') is not None:
+        speed = int(request.args.get('speed'))
+    else:
+        speed = 0
     byte_io = BytesIO()
-    image = get_image(char, gear, stars, zetas)
+    image = get_image(char, gear, stars, zetas, speed)
     image.save(byte_io, 'PNG')
     byte_io.seek(0)
     return send_file(byte_io, mimetype='image/png')
