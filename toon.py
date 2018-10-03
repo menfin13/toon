@@ -36,9 +36,10 @@ def get_char_image(char_name):
 
 
 def generate_image(char, gear, stars, zetas_count, speed):
-    result = Image.new('RGB', (150, 150), color=(0, 0, 0))
+    result = Image.new('RGBA', (150, 150), color=(0, 0, 0))
 
     toon = get_char_image(char)
+    toon = toon.convert("RGBA")
     result.paste(toon, (11, 22), toon)
 
     gear_icon = Image.open("gear-icon-g" + str(gear) + ".png")
