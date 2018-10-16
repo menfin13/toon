@@ -7,6 +7,35 @@ from flask import Flask, send_file, request
 # http://localhost:5000/toon/ewok_paploo?gear=10&stars=2&zetas=3
 # https://menfin-swgoh.herokuapp.com/toon/ewok_paploo?gear=10&stars=2&zetas=3
 
+romanNumeralMap = (('M', 1000),
+                   ('CM', 900),
+                   ('D', 500),
+                   ('CD', 400),
+                   ('C', 100),
+                   ('XC', 90),
+                   ('L', 50),
+                   ('XL', 40),
+                   ('X', 10),
+                   ('IX', 9),
+                   ('V', 5),
+                   ('IV', 4),
+                   ('I', 1))
+
+
+def toRoman(n):
+    if not (0 < n < 5000):
+        raise OutOfRangeError("number out of range (must be 1..4999)")
+    if int(n) != n:
+        raise NotIntegerError("decimals can not be converted")
+
+    result = ""
+    for numeral, integer in romanNumeralMap:
+        while n >= integer:
+            result += numeral
+            n -= integer
+    return result
+
+
 star_active = Image.open("star.png")
 star_inactive = Image.open("star-inactive.png")
 
@@ -85,9 +114,22 @@ def generate_image(char, gear, stars, zetas_count, speed):
                         fill=(0, 0, 0, 255))
         result.paste(speed_img, (90, 90), speed_img)
 
-    draw_gear = ImageDraw.Draw(result)
 
-    #    draw_gear.text((75, 75), "XI", font=ImageFont.truetype("/usr/share/fonts/TTF/DejaVuSansMono-Bold.ttf", 15))
+    # gear text
+    gear_text_img = Image.open("gear_text_back_" + str(gear) + ".png")
+    gear_text_img = gear_text_img.resize((40, 35))
+    draw_gear_text = ImageDraw.Draw(gear_text_img)
+    roman_gear = toRoman(gear)
+    shadow_fill = (0, 0, 0, 255)
+    font = ImageFont.truetype("/usr/share/fonts/TTF/DejaVuSans-Bold.ttf", 16)
+    x = 18 - len(roman_gear) * 3
+    y = 10
+    draw_gear_text.text((x-1, y-1), roman_gear, font=font, fill=shadow_fill)
+    draw_gear_text.text((x+1, y-1), roman_gear, font=font, fill=shadow_fill)
+    draw_gear_text.text((x-1, y+1), roman_gear, font=font, fill=shadow_fill)
+    draw_gear_text.text((x+2, y+2), roman_gear, font=font, fill=shadow_fill)
+    draw_gear_text.text((x, y), roman_gear, font=font, fill=(255, 255, 255, 255))
+    result.paste(gear_text_img, (55, 115), gear_text_img)
 
     return result
 
