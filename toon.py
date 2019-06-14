@@ -54,13 +54,13 @@ def ensure_cache_dir_exists():
 
 def get_char_image(char_name):
     try:
-        result = Image.open("cache/tex.charui_" + char_name + ".png")
+        result = Image.open("cache/char_" + char_name + ".png")
     except:
-        url = "https://swgoh.gg/static/img/assets/tex.charui_" + char_name + ".png"
+        url = "https://swgoh.gg/game-asset/u/" + char_name
         response = requests.get(url)
         result = Image.open(BytesIO(response.content))
         ensure_cache_dir_exists()
-        result.save("cache/tex.charui_" + char_name + ".png")
+        result.save("cache/char_" + char_name + ".png")
     return result
 
 
