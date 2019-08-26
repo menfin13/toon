@@ -153,7 +153,10 @@ app = Flask(__name__)
 def get_toon(char):
     gear = int(request.args.get('gear'))
     stars = int(request.args.get('stars'))
-    zetas = int(request.args.get('zetas'))
+    if request.args.get('zetas') is not None:
+        zetas = int(request.args.get('zetas'))
+    else:
+        zetas = 0
     if request.args.get('speed') is not None:
         speed = int(request.args.get('speed'))
     else:
