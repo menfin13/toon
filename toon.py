@@ -109,8 +109,10 @@ def generate_image(char, gear, stars, zetas_count, speed, relics_count):
         relic_img = Image.open("relic_neutre.png")
         relic_img = relic_img.resize((54, 54))
         draw_relic = ImageDraw.Draw(relic_img)
-        draw_relic.text((22, 15), str(relics_count), font=ImageFont.truetype("/usr/share/fonts/TTF/DejaVuSans.ttf", 18),
+        draw_relic.text((21, 15), str(relics_count), font=ImageFont.truetype("/usr/share/fonts/TTF/DejaVuSans-Bold.ttf", 19),
                         fill=(0, 0, 0, 255))
+        draw_relic.text((22, 16), str(relics_count), font=ImageFont.truetype("/usr/share/fonts/TTF/DejaVuSans.ttf", 18),
+                        fill=(255, 255, 255, 255))
         result.paste(relic_img, (90, 100), relic_img)
 
     # VITESSE
