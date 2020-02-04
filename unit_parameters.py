@@ -61,6 +61,9 @@ class ShipParameters:
             result = result + (self.char_params[i].get_hash() + "_" if self.char_params[i] is not None else "")
         return result
 
+    def has_char1(self):
+        return self.char_params[0] is not None
+
     def has_char2(self):
         return self.char_params[1] is not None
 

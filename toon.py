@@ -172,9 +172,10 @@ class ShipImageGenerator(ImageGenerator):
         frame = Image.open("ship-frame.png")
         result.paste(frame, (0, 0), frame)
 
-        toon = ToonImageGenerator().generate(params.char_params[0])
-        toon = toon.resize((150, 150))
-        result.paste(toon, (10, 90), toon)
+        if params.has_char1():
+            toon = ToonImageGenerator().generate(params.char_params[0])
+            toon = toon.resize((150, 150))
+            result.paste(toon, (10, 90), toon)
 
         if params.has_char2():
             toon = ToonImageGenerator().generate(params.char_params[1])
