@@ -208,7 +208,7 @@ class ShipImageGenerator(ImageGenerator):
             draw_speed = ImageDraw.Draw(result)
             draw_speed.text((360, 215), str(params.speed),
                             font=ImageFont.truetype("/usr/share/fonts/TTF/DejaVuSans-Bold.ttf", 24),
-                            fill=(255, 0, 0, 255))
+                            fill=(255, 255, 255, 255))
 
         return result
 
