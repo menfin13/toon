@@ -216,10 +216,11 @@ class ShipImageGenerator(ImageGenerator):
 def get_image(params, generator):
     ensure_cache_dir_exists()
     cache_name = "cache/" + params.get_hash() + ".png"
-    print(cache_name)
     try:
         result = Image.open(cache_name)
+        print("Image found in cache: " + cache_name)
     except:
+        print("Not found in cache, generate image")
         result = generator.generate(params)
         result.save(cache_name)
     return result
