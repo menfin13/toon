@@ -4,7 +4,7 @@ import requests
 from io import BytesIO
 from flask import Flask, send_file, request
 from unit_parameters import CharParameters, ShipParameters
-#dummy
+
 # http://localhost:5000/toon/ewok_paploo?gear=10&stars=2&zetas=3
 # https://menfin-swgoh.herokuapp.com/toon/ewok_paploo?gear=10&stars=2&zetas=3
 
@@ -76,6 +76,7 @@ class ToonImageGenerator(ImageGenerator):
 
         toon = get_asset_image(params.char_id)
         toon = toon.convert("RGBA")
+        toon = toon.resize((128, 128))
         result.paste(toon, (11, 22), toon)
 
         mask = Image.new('L', result.size, color=0)
@@ -251,4 +252,4 @@ def get_ship(ship):
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    app.run(debug=True, host='0.0.0.0', port=port)
+    app.run(debug=False, host='0.0.0.0', port=port)
