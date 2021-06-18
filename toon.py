@@ -57,7 +57,7 @@ def get_asset_image(unit_name):
     try:
         result = Image.open("cache/asset_" + unit_name + ".png")
     except:
-        url = "https://swgoh.gg/game-asset/u/" + unit_name
+        url = "https://swgoh.gg/game-asset/u/" + unit_name + ".png"
         response = requests.get(url)
         result = Image.open(BytesIO(response.content))
         ensure_cache_dir_exists()
